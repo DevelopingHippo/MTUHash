@@ -31,21 +31,24 @@ void expansion_operation(int new_block[48], const int old_block[32]) {
 
 
 int convertToBinary(const int digits[4]) {
-    int binaryInt;
-    long binary;
+    int binaryInt = 0;
 
-    for(int i = 0; i < 4; i++)
+    if(digits[0] == 1)
     {
-        if(digits[i] == 1)
-        {
-            binary += pow(1,i * 10);
-        }
-        printf("%ld", binary);
+        binaryInt += 8;
     }
-
-
-
-
+    if(digits[1] == 1)
+    {
+        binaryInt += 4;
+    }
+    if(digits[2] == 1)
+    {
+        binaryInt += 2;
+    }
+    if(digits[3] == 1)
+    {
+        binaryInt += 1;
+    }
     return binaryInt;
 }
 
@@ -71,24 +74,16 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
             {15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13}
     };
 
-
+    count = 0;
     // Substitution Operation
     for(int i = 0; i < 8; i++)
     {
         int row = (2 * substituted_block[i][0]) + substituted_block[i][5];
 
         int columnBinary[] = { substituted_block[i][1], substituted_block[i][2], substituted_block[i][3], substituted_block[i][4]};
-
         int column = convertToBinary(columnBinary);
-    }
 
-    count = 0;
-    for(int i = 0; i < 8; i++)
-    {
-        for(int j = 0; j < 6; j++)
-        {
-            new_block[count] = substituted_block[i][j];
-        }
+        new_block[count] = substituted_block[row][column];
     }
 
 }
@@ -141,13 +136,66 @@ void reformatInput(const char stringInput[32], int intInput[32]) {
 
 int main() {
     char binaryStringInput[1000];
-    int binaryIntInput[1000];
+
     int sizeOfInput;
     // Take in user input for the binary string to be hashed
-    printf("What is the size of the input message: ");
-    scanf("%d", &sizeOfInput);
-    printf("What is your input message: ");
-    scanf("%s", &binaryStringInput[0]);
+
+
+    printf("What binary input would you like to be hashed?\n");
+
+
+
+    char inputBuffer[32];
+
+    int *intBinaryInput;
+
+    intBinaryInput = (int *) malloc (32 * sizeof(int));
+
+    int count = 0;
+    char buffer;
+    buffer = getchar();
+    while(buffer != '\n')
+    {
+
+        if(buffer == '1')
+        {
+            inputBuffer[count] = 1;
+        }
+        else if(buffer == '0')
+        {
+            inputBuffer[count] = 0;
+        }
+        else
+        {
+            printf("Input not in Binary Format!");
+            return 0;
+        }
+
+        buffer = getchar();
+
+        if(count % 32 == 0 && buffer != '\n')
+        {
+            int buffer
+
+            for()
+            {
+
+            }
+
+        }
+    }
+
+
+
+
+
+    //while((getchar() != '\n'));
+
+
+//    printf("What is the size of the input message: ");
+//    scanf("%d", &sizeOfInput);
+//    printf("What is your input message: ");
+//    scanf("%s", &binaryStringInput[0]);
 
     reformatInput(binaryStringInput, binaryIntInput);
     hashInput(binaryIntInput);
@@ -156,6 +204,5 @@ int main() {
     {
         printf("%d", binaryIntInput[i]);
     }
-
     return 0;
 }
