@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 // This is Done!
 void expansion_operation(int expanded_block[48], const int portion_block[32]) {
@@ -277,23 +276,7 @@ void hashInput(int *fullBlock, const int blockCount){
         if(blockCount == 1)
         {
             expansion_operation(expanded_block, fullBlock);
-
-            // DEBUG
-            printf("\nRound %d: Expansion = ", i);
-            for(int y = 0; y < blockCount * 32; y++)
-            {
-                printf("%d", fullBlock[y]);
-            }
-
             substitute_operation(fullBlock, expanded_block);
-
-            // DEBUG
-            printf("\nRound %d: Substitution = ", i);
-            for(int y = 0; y < (blockCount * 32); y++)
-            {
-                printf("%d", fullBlock[y]);
-            }
-
         }
         else
         {
@@ -318,17 +301,6 @@ void hashInput(int *fullBlock, const int blockCount){
                 //Preform XOR operation
                 XOR_operation(fullBlock, blockCount, j);
             }
-        }
-
-        //DEBUG
-        printf("\nRound %d: ", i);
-        for(int y = 0; y < blockCount * 32; y++)
-        {
-            if(y % 32 == 0)
-            {
-                printf("][");
-            }
-            printf("%d", fullBlock[y]);
         }
     }
 
@@ -370,7 +342,8 @@ int main() {
             return 0;
         }
         buffer = getchar();
-        if( (count != 0) && (count % 32 == 0) && (buffer != '\n') )
+        count++;
+        if( (count % 32 == 0) && (buffer != '\n') )
         {
             newIntBinaryInput = (int *) malloc ((32 * (blockCount + 1)) * sizeof(int));
 
@@ -382,16 +355,8 @@ int main() {
             intBinaryInput = newIntBinaryInput;
             blockCount++;
         }
-        count++;
     }
 
-
-    printf("\nStart: ");
-    for(int i = 0; i < 32 * blockCount; i++)
-    {
-        printf("%d", intBinaryInput[i]);
-    }
-    printf("\nBlock Count: %d\n", blockCount);
     hashInput(intBinaryInput, blockCount);
 
     printf("\nHashed Output: ");
