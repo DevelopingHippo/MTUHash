@@ -3,7 +3,7 @@
 #include <math.h>
 
 // This is Done!
-void expansion_operation(int new_block[48], const int old_block[32]) {
+void expansion_operation(int expanded_block[48], const int portion_block[32]) {
 
     // Expansion Array
     int expansionArray[8][6] = {
@@ -18,12 +18,13 @@ void expansion_operation(int new_block[48], const int old_block[32]) {
     };
 
     int count = 0;
+
     // Expansion Operation
     for(int i = 0; i < 8; i++) {
         for (int j = 0; j < 6; j++)
         {
             int expanded = expansionArray[i][j] - 1;
-            new_block[count] = old_block[expanded];
+            expanded_block[count] = portion_block[expanded];
             count++;
         }
     }
@@ -53,7 +54,7 @@ int convertToBinary(const int digits[4]) {
 }
 
 
-void substitute_operation(int new_block[32], const int old_block[48]) {
+void substitute_operation(int portion_block[32], const int expanded_block[48]) {
 
     int substituted_block[8][6];
 
@@ -62,7 +63,7 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
     {
         for(int j = 0; j < 6; j++)
         {
-            substituted_block[i][j] = old_block[count];
+            substituted_block[i][j] = expanded_block[count];
         }
     }
 
@@ -83,7 +84,7 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
         int columnBinary[] = { substituted_block[i][1], substituted_block[i][2], substituted_block[i][3], substituted_block[i][4]};
         int column = convertToBinary(columnBinary);
 
-        new_block[count] = substituted_block[row][column];
+        portion_block[count] = substituted_block[row][column];
     }
 
 }
@@ -91,8 +92,42 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
 
 void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn) {
 
-
-
+    // If there is only 2 total blocks
+    if(blockCount == 2)
+    {
+        // swap bit placement with second block
+        for(int i = 0; i < 32; i++)
+        {
+            int buffer = fullBlock[i];
+            fullBlock[i] = fullBlock[i + 32];
+            fullBlock[i + 32] = buffer;
+        }
+    }
+    else
+    {
+        // Iterate through each block
+        for(int i = 0; i < blockCount - 1; i++)
+        {
+            // If the operatedBlock is not selected
+            if(i != blockToOperateOn)
+            {
+                // For each bit
+                for(int j = 0; j < 32; j++)
+                {
+                    // If the bit is the same as the bit in the other block replace with 0
+                    if((fullBlock[j + ((blockToOperateOn) * 32)] == 1 && fullBlock[j + (i * 32)] == 1) || (fullBlock[j + ((blockToOperateOn) * 32)] == 0 && fullBlock[j + (i * 32)] == 0) )
+                    {
+                        fullBlock[j + ((blockToOperateOn) * 32)] = 0;
+                    }
+                    // if not replace with 1
+                    else
+                    {
+                        fullBlock[j + ((blockToOperateOn) * 32)] = 1;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void hashInput(int *fullBlock, const int blockCount){
@@ -100,18 +135,35 @@ void hashInput(int *fullBlock, const int blockCount){
     int expanded_block[48];
     int portionBlock[32];
 
+
     for(int i = 0; i < 15; i++)
     {
         // If only 1 block only do substitution and expansion, no XOR
         if(blockCount == 1)
         {
             expansion_operation(expanded_block, fullBlock);
+
+            // DEBUG
+            printf("\nRound %d: Expansion = ", i);
+            for(int y = 0; y < blockCount * 32; y++)
+            {
+                printf("%d", fullBlock[y]);
+            }
+
             substitute_operation(fullBlock, expanded_block);
+
+            // DEBUG
+            printf("\nRound %d: Substitution = ", i);
+            for(int y = 0; y < (blockCount * 32); y++)
+            {
+                printf("%d", fullBlock[y]);
+            }
+
         }
         else
         {
             // Start Iterating through each block
-            for(int j = 0; j < blockCount; j++)
+            for(int j = 0; j < blockCount - 1; j++)
             {
                 // Move the block from the fullBlock to the portionBlock
                 for(int x = 0; x < 32; x++)
@@ -132,14 +184,23 @@ void hashInput(int *fullBlock, const int blockCount){
                 XOR_operation(fullBlock, blockCount, j);
             }
         }
-    }
 
+        //DEBUG
+        printf("\nRound %d: ", i);
+        for(int y = 0; y < blockCount * 32; y++)
+        {
+            if(y % 32 == 0)
+            {
+                printf("][");
+            }
+            printf("%d", fullBlock[y]);
+        }
+    }
 
     // Final XOR operation
     for(int i = 0; i < blockCount; i++)
     {
         XOR_operation(fullBlock, blockCount, i);
-
     }
 }
 
@@ -173,7 +234,6 @@ int main() {
             printf("Input not in Binary Format!");
             return 0;
         }
-        printf("Debug: %d | %d\n", count, intBinaryInput[count]);
         buffer = getchar();
         if( (count != 0) && (count % 32 == 0) && (buffer != '\n'))
         {
@@ -193,10 +253,10 @@ int main() {
 
 
 
-
+    printf("\nBlock Count: %d\n", blockCount);
     hashInput(intBinaryInput, blockCount);
 
-    printf("Hashed Output: ");
+    printf("\nHashed Output: ");
 
     for(int i = 0; i < blockCount * 32; i++)
     {
