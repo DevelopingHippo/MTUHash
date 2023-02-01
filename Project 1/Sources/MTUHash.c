@@ -89,120 +89,118 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
 }
 
 
-void XOR_operation(int new_block[32], int old_block[32]) {
+void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn) {
+
 
 
 }
 
-void hashInput(int block[32]){
+void hashInput(int *fullBlock, const int blockCount){
 
     int expanded_block[48];
-    int substituted_block[32];
+    int portionBlock[32];
 
-    expansion_operation(expanded_block, block);
-    substitute_operation(substituted_block, expanded_block);
-
-//    for(int i = 0; i < 15; i++)
-//    {
-//        //substitute_operation(substituted_block, expanded_block);
-//        //XOR_operation(block, substituted_block);
-//    }
-//    XOR_operation(block, block);
-}
-
-// This is done!
-void reformatInput(const char stringInput[32], int intInput[32]) {
-    for(int i = 0; i < 32; i++)
+    for(int i = 0; i < 15; i++)
     {
-        char compareString = stringInput[i];
-        char compareOne = '1';
-        char compareZero = '0';
-
-        if(compareString == compareOne)
+        // If only 1 block only do substitution and expansion, no XOR
+        if(blockCount == 1)
         {
-            intInput[i] = 1;
-        }
-        else if(compareString == compareZero)
-        {
-            intInput[i] = 0;
+            expansion_operation(expanded_block, fullBlock);
+            substitute_operation(fullBlock, expanded_block);
         }
         else
         {
-            printf("Input not in Binary Format!");
-            exit(0);
+            // Start Iterating through each block
+            for(int j = 0; j < blockCount; j++)
+            {
+                // Move the block from the fullBlock to the portionBlock
+                for(int x = 0; x < 32; x++)
+                {
+                    portionBlock[x] = fullBlock[ x + (32 * j)];
+                }
+
+                expansion_operation(expanded_block, portionBlock);
+                substitute_operation(portionBlock, expanded_block);
+
+                // Move the changed portionBlock values back into the fullBlock
+                for(int x = 0; x < 32; x++)
+                {
+                    fullBlock[32 * j] = portionBlock[x];
+                }
+
+                //Preform XOR operation
+                XOR_operation(fullBlock, blockCount, j);
+            }
         }
+    }
+
+
+    // Final XOR operation
+    for(int i = 0; i < blockCount; i++)
+    {
+        XOR_operation(fullBlock, blockCount, i);
+
     }
 }
 
-int main() {
-    char binaryStringInput[1000];
 
-    int sizeOfInput;
-    // Take in user input for the binary string to be hashed
+int main() {
 
 
     printf("What binary input would you like to be hashed?\n");
 
-
-
-    char inputBuffer[32];
-
     int *intBinaryInput;
+    int *newIntBinaryInput;
 
     intBinaryInput = (int *) malloc (32 * sizeof(int));
 
     int count = 0;
+    int blockCount = 1;
     char buffer;
     buffer = getchar();
     while(buffer != '\n')
     {
-
         if(buffer == '1')
         {
-            inputBuffer[count] = 1;
+            intBinaryInput[count] = 1;
         }
         else if(buffer == '0')
         {
-            inputBuffer[count] = 0;
+            intBinaryInput[count] = 0;
         }
         else
         {
             printf("Input not in Binary Format!");
             return 0;
         }
-
+        printf("Debug: %d | %d\n", count, intBinaryInput[count]);
         buffer = getchar();
-
-        if(count % 32 == 0 && buffer != '\n')
+        if( (count != 0) && (count % 32 == 0) && (buffer != '\n'))
         {
-            int buffer
+            newIntBinaryInput = (int *) malloc ((32 * (blockCount + 1)) * sizeof(int));
 
-            for()
+            for(int i = 0; i < 32 * blockCount; i++)
             {
-
+                newIntBinaryInput[i] = intBinaryInput[i];
             }
-
+            free(intBinaryInput);
+            intBinaryInput = newIntBinaryInput;
+            newIntBinaryInput = NULL;
+            blockCount++;
         }
+        count++;
     }
 
 
 
 
+    hashInput(intBinaryInput, blockCount);
 
-    //while((getchar() != '\n'));
+    printf("Hashed Output: ");
 
-
-//    printf("What is the size of the input message: ");
-//    scanf("%d", &sizeOfInput);
-//    printf("What is your input message: ");
-//    scanf("%s", &binaryStringInput[0]);
-
-    reformatInput(binaryStringInput, binaryIntInput);
-    hashInput(binaryIntInput);
-
-    for(int i = 0; i < 32; i++)
+    for(int i = 0; i < blockCount * 32; i++)
     {
-        printf("%d", binaryIntInput[i]);
+        printf("%d", intBinaryInput[i]);
     }
     return 0;
 }
