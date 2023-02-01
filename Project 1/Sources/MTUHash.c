@@ -53,6 +53,122 @@ int convertToBinary(const int digits[4]) {
     return binaryInt;
 }
 
+void intToBinary(int integer, int minorBlock[4])
+{
+    if(integer == 15)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 1;
+        minorBlock[2] = 1;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 14)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 1;
+        minorBlock[2] = 1;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 13)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 1;
+        minorBlock[2] = 0;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 12)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 1;
+        minorBlock[2] = 0;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 11)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 0;
+        minorBlock[2] = 1;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 10)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 0;
+        minorBlock[2] = 1;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 9)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 0;
+        minorBlock[2] = 0;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 8)
+    {
+        minorBlock[0] = 1;
+        minorBlock[1] = 0;
+        minorBlock[2] = 0;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 7)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 1;
+        minorBlock[2] = 1;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 6)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 1;
+        minorBlock[2] = 1;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 5)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 1;
+        minorBlock[2] = 0;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 4)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 1;
+        minorBlock[2] = 0;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 3)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 0;
+        minorBlock[2] = 1;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 2)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 0;
+        minorBlock[2] = 1;
+        minorBlock[3] = 0;
+    }
+    else if(integer == 1)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 0;
+        minorBlock[2] = 0;
+        minorBlock[3] = 1;
+    }
+    else if(integer == 0)
+    {
+        minorBlock[0] = 0;
+        minorBlock[1] = 0;
+        minorBlock[2] = 0;
+        minorBlock[3] = 0;
+    }
+}
+
 
 void substitute_operation(int portion_block[32], const int expanded_block[48]) {
 
@@ -75,7 +191,6 @@ void substitute_operation(int portion_block[32], const int expanded_block[48]) {
             {15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13}
     };
 
-    count = 0;
     // Substitution Operation
     for(int i = 0; i < 8; i++)
     {
@@ -84,7 +199,27 @@ void substitute_operation(int portion_block[32], const int expanded_block[48]) {
         int columnBinary[] = { substituted_block[i][1], substituted_block[i][2], substituted_block[i][3], substituted_block[i][4]};
         int column = convertToBinary(columnBinary);
 
-        portion_block[count] = substituted_block[row][column];
+        int minorBlock[4];
+
+        intToBinary(substituted_block[row][column], minorBlock);
+
+        for(int j = 1; j < 5; j++)
+        {
+            substituted_block[i][j] = minorBlock[j - 1];
+        }
+    }
+
+    count = 0;
+    for(int i = 0; i < 8; i++)
+    {
+        portion_block[count] = substituted_block[i][1];
+        count++;
+        portion_block[count] = substituted_block[i][2];
+        count++;
+        portion_block[count] = substituted_block[i][3];
+        count++;
+        portion_block[count] = substituted_block[i][4];
+        count++;
     }
 
 }
@@ -235,7 +370,7 @@ int main() {
             return 0;
         }
         buffer = getchar();
-        if( (count != 0) && (count % 32 == 0) && (buffer != '\n'))
+        if( (count != 0) && (count % 32 == 0) && (buffer != '\n') )
         {
             newIntBinaryInput = (int *) malloc ((32 * (blockCount + 1)) * sizeof(int));
 
@@ -245,14 +380,17 @@ int main() {
             }
             free(intBinaryInput);
             intBinaryInput = newIntBinaryInput;
-            newIntBinaryInput = NULL;
             blockCount++;
         }
         count++;
     }
 
 
-
+    printf("\nStart: ");
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        printf("%d", intBinaryInput[i]);
+    }
     printf("\nBlock Count: %d\n", blockCount);
     hashInput(intBinaryInput, blockCount);
 
