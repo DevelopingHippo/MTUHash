@@ -30,12 +30,6 @@ void expansion_operation(int new_block[48], const int old_block[32]) {
 }
 
 
-
-
-
-
-
-
 int convertToBinary(const int digits[4]) {
     int binaryInt;
     long binary;
@@ -165,5 +159,3 @@ int main() {
 
     return 0;
 }
-
-
