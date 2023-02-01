@@ -85,7 +85,7 @@ void substitute_operation(int new_block[32], const int old_block[48]) {
 
         int columnBinary[] = { substituted_block[i][1], substituted_block[i][2], substituted_block[i][3], substituted_block[i][4]};
 
-        //int column = convertToBinary(columnBinary);
+        int column = convertToBinary(columnBinary);
     }
 
     count = 0;
