@@ -357,5 +357,4 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
             finalBlock[i] = fullBlock[i];
         }
     }
-
 }

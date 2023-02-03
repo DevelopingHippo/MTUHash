@@ -3,10 +3,70 @@
 #include <stdlib.h>
 
 
+double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
+
+    int *comparisonBlock;
+    int *originalBlock;
+    originalBlock = (int *) malloc ((32 * (blockCount)) * sizeof(int));
+    comparisonBlock = (int *) malloc ((32) * sizeof(int));
+
+    double AFRAverage[(32 * blockCount)];
+
+    // Move Data into Constant originalBlock
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        originalBlock[i] = fullBlock[i];
+    }
 
 
+    // First Hash Output
+    MTUHash(comparisonBlock, fullBlock, blockCount);
+
+    // Iterate through each bit and replace it and rehash
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        for(int j = 0; j < 32 * blockCount; j++)
+        {
+            fullBlock[j] = originalBlock[j];
+        }
+        if(fullBlock[i] == 1)
+        {
+            fullBlock[i] = 0;
+        }
+        else
+        {
+            fullBlock[i] = 1;
+        }
+
+        MTUHash(finalBlock, fullBlock, blockCount);
+
+        double sameCount = 0;
+        for(int j = 0; j < 32; j++)
+        {
+            if(comparisonBlock[j] == finalBlock[j])
+            {
+                sameCount++;
+            }
+        }
+
+        double AFR = (sameCount / 32.00);
+        AFRAverage[i] = AFR;
+    }
+
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        printf("%d", originalBlock[i]);
+    }
 
 
+    // Calculate the Average of all AFR values
+    double average = 0;
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        average += AFRAverage[i];
+    }
+    return (average / (32 * blockCount));
+}
 
 
 int main() {
@@ -18,7 +78,7 @@ int main() {
     int *intBinaryInput;
     int *newIntBinaryInput;
     int *finalBlock;
-
+    int *originalBlock;
     finalBlock = (int *) malloc (32 * sizeof(int));
     intBinaryInput = (int *) malloc (32 * sizeof(int));
 
@@ -26,9 +86,7 @@ int main() {
     int blockCount = 1;
 
     inFile = fopen("C:\\Users\\thadg\\CLionProjects\\MTUHash\\Project 1\\Sources\\Hashin.txt", "r");
-    outFile = fopen("AFR.txt", "w");
-
-
+    outFile = fopen("C:\\Users\\thadg\\CLionProjects\\MTUHash\\Project 1\\Sources\\AFR.txt", "a");
 
     if(NULL == inFile)
     {
@@ -39,7 +97,6 @@ int main() {
     buffer = fgetc(inFile);
     while(buffer != '\n')
     {
-        printf("%c", buffer);
         if(buffer == '1')
         {
             intBinaryInput[count] = 1;
@@ -73,16 +130,21 @@ int main() {
     }
     fclose(inFile);
 
-    MTUHash(finalBlock, intBinaryInput, blockCount);
+    originalBlock = (int *) malloc ((32 * blockCount) * sizeof(int));
 
-
-    printf("\nFinal Output: ");
-    for(int i = 0; i < 32; i++)
+    for(int i = 0; i < 32 * blockCount; i++)
     {
-        printf("%d", finalBlock[i]);
+        originalBlock[i] = intBinaryInput[i];
+    }
+
+    double afraverage = AFRCalculation(finalBlock, intBinaryInput, blockCount);
+
+    fprintf(outFile, "\n%lf = AFR Average from input ", afraverage);
+    for(int i = 0; i < 32 * blockCount; i++)
+    {
+        fprintf(outFile, "%d", originalBlock[i]);
     }
 
     fclose(outFile);
     return 0;
 }
-
