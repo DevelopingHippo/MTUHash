@@ -304,7 +304,7 @@ void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount) {
 
 }
 
-void hashInput(int *finalBlock, int *fullBlock, const int blockCount) {
+void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
 
     int expanded_block[48];
     int portionBlock[32];
@@ -358,63 +358,4 @@ void hashInput(int *finalBlock, int *fullBlock, const int blockCount) {
         }
     }
 
-}
-
-
-int main() {
-
-    printf("What binary input would you like to be hashed?\n");
-
-    int *intBinaryInput;
-    int *newIntBinaryInput;
-    int *finalBlock;
-
-
-    finalBlock = (int *) malloc (32 * sizeof(int));
-    intBinaryInput = (int *) malloc (32 * sizeof(int));
-
-    int count = 0;
-    int blockCount = 1;
-    char buffer;
-    buffer = getchar();
-    while(buffer != '\n')
-    {
-        if(buffer == '1')
-        {
-            intBinaryInput[count] = 1;
-        }
-        else if(buffer == '0')
-        {
-            intBinaryInput[count] = 0;
-        }
-        else
-        {
-            printf("Input not in Binary Format!");
-            return 0;
-        }
-        buffer = getchar();
-        count++;
-        if( (count % 32 == 0) && (buffer != '\n') )
-        {
-            newIntBinaryInput = (int *) malloc ((32 * (blockCount + 1)) * sizeof(int));
-            for(int i = 0; i < 32 * blockCount; i++)
-            {
-                newIntBinaryInput[i] = intBinaryInput[i];
-            }
-            free(intBinaryInput);
-            intBinaryInput = newIntBinaryInput;
-            blockCount++;
-        }
-    }
-
-
-    hashInput(finalBlock, intBinaryInput, blockCount);
-
-    printf("\nHashed Output: ");
-
-    for(int i = 0; i < 32; i++)
-    {
-        printf("%d", finalBlock[i]);
-    }
-    return 0;
 }
