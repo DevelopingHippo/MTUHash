@@ -18,9 +18,23 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
         originalBlock[i] = fullBlock[i];
     }
 
-
     // First Hash Output
     MTUHash(comparisonBlock, fullBlock, blockCount);
+
+
+    printf("\nOriginal Block: ");
+    for(int j = 0; j < 32 * blockCount; j++)
+    {
+        printf("%d", originalBlock[j]);
+    }
+    printf("\nComparison Block: ");
+    for(int j = 0; j < 32; j++)
+    {
+        printf("%d", comparisonBlock[j]);
+    }
+    printf("\n");
+
+
 
     // Iterate through each bit and replace it and rehash
     for(int i = 0; i < 32 * blockCount; i++)
@@ -38,9 +52,27 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
             fullBlock[i] = 1;
         }
 
-        MTUHash(finalBlock, fullBlock, blockCount);
+        printf("\nRound #%d: ", i);
+        for(int j = 0; j < 32 * blockCount; j++)
+        {
+            printf("%d", fullBlock[j]);
+        }
 
-        double sameCount = 0;
+        MTUHash(finalBlock, fullBlock, blockCount);
+        printf("\n");
+        for(int j = 0; j < 32 * blockCount; j++)
+        {
+            printf("%d", fullBlock[j]);
+        }
+
+        printf("\nOutput: ");
+        for(int j = 0; j < 32; j++)
+        {
+            printf("%d", finalBlock[j]);
+        }
+        printf("\n");
+
+        int sameCount = 0;
         for(int j = 0; j < 32; j++)
         {
             if(comparisonBlock[j] == finalBlock[j])
@@ -48,16 +80,9 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
                 sameCount++;
             }
         }
-
         double AFR = (sameCount / 32.00);
         AFRAverage[i] = AFR;
     }
-
-    for(int i = 0; i < 32 * blockCount; i++)
-    {
-        printf("%d", originalBlock[i]);
-    }
-
 
     // Calculate the Average of all AFR values
     double average = 0;
