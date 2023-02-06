@@ -309,7 +309,7 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
     int expanded_block[48];
     int portionBlock[32];
 
-    for(int i = 0; i < 15; i++)
+    for(int i = 0; i < 16; i++)
     {
         // If only 1 block only do substitution and expansion, no XOR
         if(blockCount == 1)
@@ -341,8 +341,6 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
                 XOR_operation(fullBlock, blockCount, j);
             }
         }
-
-
     }
 
     if(blockCount != 1)

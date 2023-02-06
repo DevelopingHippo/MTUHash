@@ -59,11 +59,6 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
         }
 
         MTUHash(finalBlock, fullBlock, blockCount);
-        printf("\n");
-        for(int j = 0; j < 32 * blockCount; j++)
-        {
-            printf("%d", fullBlock[j]);
-        }
 
         printf("\nOutput: ");
         for(int j = 0; j < 32; j++)
