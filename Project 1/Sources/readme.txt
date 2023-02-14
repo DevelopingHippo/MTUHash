@@ -1,3 +1,6 @@
+Currently, a bug in the XOR portion of the code, but 32 bit blocks work perfectly
+
+
 To Compile on a Linux Machine:
 
 Prerequisites:
