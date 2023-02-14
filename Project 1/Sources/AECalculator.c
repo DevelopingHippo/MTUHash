@@ -5,9 +5,10 @@
 
 double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
 
-    int *comparisonBlock;
     int *originalBlock;
     originalBlock = (int *) malloc ((32 * (blockCount)) * sizeof(int));
+
+    int *comparisonBlock;
     comparisonBlock = (int *) malloc ((32) * sizeof(int));
 
     double AFRAverage[(32 * blockCount)];
@@ -21,19 +22,11 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
     // First Hash Output
     MTUHash(comparisonBlock, fullBlock, blockCount);
 
-
-    printf("\nOriginal Block: ");
-    for(int j = 0; j < 32 * blockCount; j++)
+    printf("\nHashed Output: ");
+    for(int i = 0; i < 32; i++)
     {
-        printf("%d", originalBlock[j]);
+        printf("%d", comparisonBlock[i]);
     }
-    printf("\nComparison Block: ");
-    for(int j = 0; j < 32; j++)
-    {
-        printf("%d", comparisonBlock[j]);
-    }
-    printf("\n");
-
 
 
     // Iterate through each bit and replace it and rehash
@@ -52,20 +45,7 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
             fullBlock[i] = 1;
         }
 
-        printf("\nRound #%d: ", i);
-        for(int j = 0; j < 32 * blockCount; j++)
-        {
-            printf("%d", fullBlock[j]);
-        }
-
         MTUHash(finalBlock, fullBlock, blockCount);
-
-        printf("\nOutput: ");
-        for(int j = 0; j < 32; j++)
-        {
-            printf("%d", finalBlock[j]);
-        }
-        printf("\n");
 
         int sameCount = 0;
         for(int j = 0; j < 32; j++)

@@ -263,6 +263,7 @@ void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn) {
             }
         }
     }
+
 }
 
 void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount) {
@@ -284,6 +285,7 @@ void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount) {
             // For each bit in Block 1
             for(int j = 0; j < 32; j++)
             {
+
                 // If the bit is the same as the bit in the other block replace with 0
                 if((fullBlock[j] == 1 && fullBlock[j + (i * 32)] == 1) || (fullBlock[j] == 0 && fullBlock[j + (i * 32)] == 0) )
                 {
