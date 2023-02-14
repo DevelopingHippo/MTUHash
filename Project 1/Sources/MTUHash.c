@@ -241,7 +241,7 @@ void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn) {
     else if(blockCount > 2)
     {
         // Iterate through each block
-        for(int i = 0; i < blockCount - 1; i++)
+        for(int i = 0; i < blockCount; i++)
         {
             // If the operatedBlock is not selected
             if(i != blockToOperateOn)
@@ -263,7 +263,6 @@ void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn) {
             }
         }
     }
-
 }
 
 void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount) {
@@ -306,7 +305,7 @@ void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount) {
 
 }
 
-void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
+void MTUHash(int *finalBlock, int *fullBlock, const int blockCount, int round) {
 
     int expanded_block[48];
     int portionBlock[32];
@@ -322,12 +321,12 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
         else
         {
             // Start Iterating through each block
-            for(int j = 0; j < blockCount - 1; j++)
+            for(int j = 0; j < blockCount; j++)
             {
                 // Move the block from the fullBlock to the portionBlock
                 for(int x = 0; x < 32; x++)
                 {
-                    portionBlock[x] = fullBlock[ x + (32 * j)];
+                    portionBlock[x] = fullBlock[x + (32 * j)];
                 }
 
                 expansion_operation(expanded_block, portionBlock);
@@ -336,12 +335,23 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount) {
                 // Move the changed portionBlock values back into the fullBlock
                 for(int x = 0; x < 32; x++)
                 {
-                    fullBlock[32 * j] = portionBlock[x];
+                    fullBlock[x + (32 * j)] = portionBlock[x];
                 }
 
                 //Preform XOR operation
                 XOR_operation(fullBlock, blockCount, j);
             }
+        }
+        if(i == 0 && round == 0)
+        {
+            FILE* outFile;
+            outFile = fopen(".\\Out1.txt", "a");
+            for(int j = 0; j < 32; j++)
+            {
+                fprintf(outFile, "%d", fullBlock[j]);
+            }
+            fprintf(outFile, "\n");
+            fclose(outFile);
         }
     }
 

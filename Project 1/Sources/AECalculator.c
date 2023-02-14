@@ -20,13 +20,16 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
     }
 
     // First Hash Output
-    MTUHash(comparisonBlock, fullBlock, blockCount);
+    MTUHash(comparisonBlock, fullBlock, blockCount, 0);
 
-    printf("\nHashed Output: ");
-    for(int i = 0; i < 32; i++)
+    FILE* outFile;
+    outFile = fopen(".\\OutFinal.txt", "a");
+    for(int j = 0; j < 32; j++)
     {
-        printf("%d", comparisonBlock[i]);
+        fprintf(outFile, "%d", comparisonBlock[j]);
     }
+    fprintf(outFile, "\n");
+    fclose(outFile);
 
 
     // Iterate through each bit and replace it and rehash
@@ -36,6 +39,7 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
         {
             fullBlock[j] = originalBlock[j];
         }
+
         if(fullBlock[i] == 1)
         {
             fullBlock[i] = 0;
@@ -45,7 +49,11 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
             fullBlock[i] = 1;
         }
 
-        MTUHash(finalBlock, fullBlock, blockCount);
+
+        MTUHash(finalBlock, fullBlock, blockCount, 1);
+
+
+
 
         int sameCount = 0;
         for(int j = 0; j < 32; j++)
@@ -85,8 +93,8 @@ int main() {
     int count = 0;
     int blockCount = 1;
 
-    inFile = fopen("C:\\Users\\thadg\\CLionProjects\\MTUHash\\Project 1\\Sources\\Hashin.txt", "r");
-    outFile = fopen("C:\\Users\\thadg\\CLionProjects\\MTUHash\\Project 1\\Sources\\AFR.txt", "a");
+    inFile = fopen(".\\Hashin.txt", "r");
+    outFile = fopen(".\\AFR.txt", "a");
 
     if(NULL == inFile)
     {

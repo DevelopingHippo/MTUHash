@@ -11,6 +11,6 @@ void intToBinary(int integer, int minorBlock[4]);
 void substitute_operation(int *portion_block, const int expanded_block[48]);
 void XOR_operation(int *fullBlock, int blockCount, int blockToOperateOn);
 void final_XOR_operation(int *finalBlock, int *fullBlock, int blockCount);
-void MTUHash(int *finalBlock, int *fullBlock, int blockCount);
+void MTUHash(int *finalBlock, int *fullBlock, int blockCount, int round);
 
 #endif //MTUHASH_MTUHASH_H
