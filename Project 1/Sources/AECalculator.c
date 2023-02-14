@@ -23,7 +23,7 @@ double AFRCalculation(int *finalBlock, int *fullBlock, int blockCount) {
     MTUHash(comparisonBlock, fullBlock, blockCount, 0);
 
     FILE* outFile;
-    outFile = fopen(".\\OutFinal.txt", "a");
+    outFile = fopen("./OutFinal.txt", "a");
     for(int j = 0; j < 32; j++)
     {
         fprintf(outFile, "%d", comparisonBlock[j]);
@@ -93,8 +93,8 @@ int main() {
     int count = 0;
     int blockCount = 1;
 
-    inFile = fopen(".\\Hashin.txt", "r");
-    outFile = fopen(".\\AFR.txt", "a");
+    inFile = fopen("./Hashin.txt", "r");
+    outFile = fopen("./AFR.txt", "a");
 
     if(NULL == inFile)
     {
@@ -152,6 +152,7 @@ int main() {
     {
         fprintf(outFile, "%d", originalBlock[i]);
     }
+    fprintf(outFile,"\n");
 
     fclose(outFile);
     return 0;

@@ -1,4 +1,4 @@
 CC=gcc
 CFLAGS=-I.
 hashmake: MTUHash.c AECalculator.c
-	$(CC) -o MTUHash MTUHash.o AECalculator.o
+	$(CC) -o MTUHash MTUHash.c MTUHash.h AECalculator.c

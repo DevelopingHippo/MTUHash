@@ -345,7 +345,7 @@ void MTUHash(int *finalBlock, int *fullBlock, const int blockCount, int round) {
         if(i == 0 && round == 0)
         {
             FILE* outFile;
-            outFile = fopen(".\\Out1.txt", "a");
+            outFile = fopen("./Out1.txt", "a");
             for(int j = 0; j < 32; j++)
             {
                 fprintf(outFile, "%d", fullBlock[j]);
